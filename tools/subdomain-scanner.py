@@ -6,6 +6,8 @@ FIX: Timeout on each request
 FIX: Input validation
 FIX: Status code display — shows 200, 301, 403 etc.
 FIX: Results saved to file optionally
+FIX: Dead 'sub' parameter removed from check_subdomain()
+FIX: Thread args corrected — was passing domain twice
 """
 
 import sys
@@ -45,7 +47,7 @@ STATUS_COLOR = {
     404: DM, 500: R, 503: R,
 }
 
-def check_subdomain(domain: str, sub: str, q: Queue) -> None:
+def check_subdomain(domain: str, q: Queue) -> None:  # FIX: removed dead 'sub' param (was passed twice)
     while True:
         try:
             word = q.get_nowait()
@@ -135,7 +137,7 @@ def main():
         threads = []
         for _ in range(THREADS):
             t = threading.Thread(target=check_subdomain,
-                                 args=(domain, domain, q), daemon=True)
+                                 args=(domain, q), daemon=True)  # FIX: was passing domain twice
             t.start()
             threads.append(t)
         q.join()
