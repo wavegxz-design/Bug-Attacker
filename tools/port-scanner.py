@@ -5,6 +5,7 @@ FIX: Threading for speed (50 concurrent threads)
 FIX: Input validation — range, IP format
 FIX: Per-socket timeout (was using global setdefaulttimeout)
 FIX: Results sorted and formatted cleanly
+FIX: str|None union type → Optional[str] (Python 3.8+ compat)
 """
 
 import sys
@@ -12,6 +13,7 @@ import socket
 import threading
 from datetime import datetime
 from queue import Queue
+from typing import Optional, Tuple
 
 # ── COLORS ─────────────────────────────────────────────────────────
 G  = "\033[38;5;46m"
@@ -42,14 +44,14 @@ open_ports   = []
 ports_lock   = threading.Lock()
 print_lock   = threading.Lock()
 
-def validate_ip(host: str) -> str | None:
+def validate_ip(host: str) -> Optional[str]:  # FIX: str|None requires Python 3.10+ → Optional
     """Resolve hostname or validate IP. Returns resolved IP or None."""
     try:
         return socket.gethostbyname(host.strip())
     except socket.gaierror:
         return None
 
-def validate_range(raw: str, min_p: int = 1, max_p: int = 65535):
+def validate_range(raw: str, min_p: int = 1, max_p: int = 65535) -> Optional[Tuple[int,int]]:  # FIX: added return type
     """Parse 'start-end' or single port. Returns (start, end) or None."""
     raw = raw.strip()
     try:
