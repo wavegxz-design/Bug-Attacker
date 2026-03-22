@@ -1,0 +1,24 @@
+# Environment — NEVER commit API keys
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+env/
+.venv/
+
+# Results output files
+*.txt.out
+subdomains_*.txt
+dirs_*.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
